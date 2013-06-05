@@ -1,0 +1,10 @@
+.DS_Store
+*.pyc
+docs/_build/*
+keys.sh
+*.swp
+*.pid
+*.logs
+*.log
+_build
+build
