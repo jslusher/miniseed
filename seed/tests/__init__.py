@@ -10,11 +10,13 @@ class TestCaseExample(unittest.TestCase):
         #print "test suffle"
     
     def test_failure(self):
+        pass
         #print "neat failure"
 
-        assert 1 == 2
+        #assert 1 == 2
 
     def test_error(self):
+        pass
         #print "neat Error"
 
-        raise Exception("Because, that's why")
+        #raise Exception("Because, that's why")

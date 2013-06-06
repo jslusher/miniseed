@@ -43,4 +43,6 @@ class Struct:
 
     def copy(self):
         return Struct(self.__dict__.copy())
+    def keys(self):
+        return self.__dict__.copy().keys()
 

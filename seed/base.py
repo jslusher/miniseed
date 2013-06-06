@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 
+from unittest import TestLoader, TestResult, TextTestRunner
 import logging
 logger = logging.getLogger(__name__)
 AWS_ACCESS = os.environ.get('AWS_ACCESS_KEY_ID', None)
@@ -84,27 +85,14 @@ def validate_settings(settings):
     if settings.template_path is None:
         settings.template_path = os.path.abspath(os.path.dirname(__file__))
 
-def enumerate_errors_and_failures(errors_or_failures):
-    for test_result in errors_or_failures:
-        test_case, traceback = test_result
-        print "====================== %s =========================================" % test_case.__class__.__name__
-        print test_case
-        print traceback
-        print "================================================================="
-
 def run_tests(settings):
-    from unittest import TestLoader, TestResult
     test_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests')
-    test_suite = TestLoader().discover(start_dir=test_path, pattern="*.py", top_level_dir=None)
-    test_result = TestResult()
-    test_suite.run(test_result)
-     
-    if not test_result.wasSuccessful():
-        errors = test_result.errors
-        if errors:
-            enumerate_errors_and_failures(errors)
-
-        failures = test_result.failures
-        if failures:
-            enumerate_errors_and_failures(failures)
+    try:
+        test_suite = TestLoader().discover(start_dir=test_path, pattern="*.py", top_level_dir=None)
+    except TypeError, e:
+        raise TypeError("A unit test has bad grammer. \n %s" %e)
+    
+    test_runner = TextTestRunner(stream=sys.stderr, descriptions=True, verbosity=1)
+    test_runner.run(test_suite)
+    sys.exit(0)
 
