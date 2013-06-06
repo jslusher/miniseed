@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from seed.profiles.aws.constants import i386 as AWS_i386
 import os
 import json
 
 master_profile = {
-    "driver": "aws",
-    "ami": "ami-6f640c06", #"ami-dd3758b4", #ami-0d44cd64",
-    "ami_user": "ec2-user",
-    "ami_group": "www-data",
+    "driver": AWS_i386.driver,
+    "ami": AWS_i386.ami,
+    "ami_user": AWS_i386.user,
+    "ami_group": AWS_i386.group,
     "keypair": {
         "name": "salt-dev",
         "local_path": os.path.expanduser("~/.ssh/olab/salt-dev"),
