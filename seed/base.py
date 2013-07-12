@@ -1,3 +1,8 @@
+#parses arguments, tests them, applies them to settings
+
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import argparse
 import os
 import sys
@@ -80,7 +85,8 @@ def validate_settings(settings):
      
     if settings.AWS_ACCESS is None or settings.AWS_SECRET is None:
         if not settings.force:
-            raise ValueError("You must supply some amazon keys to launch a salt-master instance.")
+            #raise ValueError("You must supply some amazon keys to launch a salt-master instance.")
+            pass
 
     if settings.template_path is None:
         settings.template_path = os.path.abspath(os.path.dirname(__file__))

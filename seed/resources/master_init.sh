@@ -11,7 +11,6 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N '' -q
 echo "Setting up firewall"
 sudo yum install rsyslog -y
 
-
 # File Roots
 #sudo echo "file_roots:" >> /etc/salt/master
 #sudo echo "  base:" >> /etc/salt/master
@@ -26,14 +25,25 @@ sudo yum install rsyslog -y
 
 echo "Setting up salt"
 sudo lokkit -p 22:tcp -p 4506:tcp -p 4505:tcp -p 4511:tcp -p 4510:tcp -p 8000:tcp
-sudo service iptables restart
-sudo iptables -F
-#sudo salt-master -d -l info
-# sudo systemctl enable salt-master.service
+sudo systemctl restart  iptables.service
+sudo salt-master -d -l info
+sudo systemctl enable salt-master.service
+
+sudo useradd -m git
+sudo mkdir /home/git/.ssh
+sudo chown git.git /home/git/.ssh
 
 sudo yum -y groupinstall "Development Tools"
 sudo yum -y install openssl-devel
-sudo yum -y install postgresql postgresql-devel postgresql-server
 sudo yum -y install supervisor
+
+
+sudo chown -R git.git /srv
+sudo su - git -c "cd /srv && git init" 
+sudo mkdir /srv/salt
+sudo chown -R git.git /srv
+
+## to include later if Django-based GUI is needed 
+#sudo yum -y install postgresql postgresql-devel postgresql-server
 
 exit 0 # manually flag that we're done executing this script

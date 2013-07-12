@@ -269,7 +269,7 @@ def register_domain(instance_name=None, provider_name=None, requested_domain=Non
 
     provider_name = provider_name or settings.provider
     requested_domain = requested_domain or settings.domain or '.'.join([instance_name,settings.DNS_DEFAULT])
-    attach_to_zone = attach_to_zone or settings.DNS_DEFAULT
+    attach_to_zone = attach_to_zone or settings.domain
 
     if not requested_domain.endswith('.'):
         requested_domain = '%s.' % requested_domain
