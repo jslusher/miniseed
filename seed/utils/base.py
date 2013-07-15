@@ -16,7 +16,8 @@ from seed.utils.drivers.aws import locate_security_group, \
     obtain_size, import_keypair, get_availability_zone
 from seed.utils.api import obtain_driver, find_script
 from seed.utils.drivers.aws import locate_security_group
-from seed.utils.keys import get_public_key_for_minion, get_public_key
+from seed.utils.keys import get_public_key_from_file
+from seed.profiles import get_profile
 
 import logging
 logger = logging.getLogger(__name__)
@@ -159,7 +160,6 @@ def water_machines(seed_profile, uuids):
     """
     Bootstrap with salt
     """
-
     nodes = []
     if seed_profile.driver == 'aws':
         driver = obtain_driver(seed_profile)
@@ -172,32 +172,44 @@ def water_machines(seed_profile, uuids):
 
         scripts = []
         for script in seed_profile.init_scripts:
+            logger.warn("SCRIPT: %s" % script)
             _file = FileDeployment(find_script(script),
                 target="/home/%s/%s" % (seed_profile.ami_user, script), )
             scripts.append(_file)
-
         msd = MultiStepDeployment(scripts)
         deploy_msd_to_node(libcloud_node, msd, seed_profile.keypair.local_path)
-
 def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     logger.warn("TODO: REFACTOR AND TAKE OUT ec2-user literal")
-
+    seed_profile = settings.operation_profile
+    seed_profile = get_profile(seed_profile)
+    pkey = seed_profile.keypair.local_path
     ssh_client = SSHClient(hostname=libcloud_node.public_ip[0],
         port=settings.SSH_PORT,
         username='ec2-user', 
         password=None,
-        key=private_key_path or os.path.expanduser("~/.ssh/id_rsa"),
+        key=pkey,
         timeout=int(settings.NETWORK_TIMEOUT),)
 
     attempts = 0
 
+    if seed_profile.profile_name == "salt_master" and ssh_client.connect() is True:
+        try:
+            try_script = seed_profile.DNS_script
+            dns_file = FileDeployment(try_script, 
+                target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(try_script)) )
+            dns_file.run(libcloud_node, ssh_client)
+            print "Placed %s in ec2-user home." % dns_file
+        except AttributeError as e:
+            print "Could not place file: %s" % e
+    else:
+        print "%s isn't a master." % seed_profile.profile_name
     while True:
         time.sleep(5)
         try:
             if ssh_client.connect() is True:
                 # Deploy files to libcloud_node
                 msd.run(libcloud_node, ssh_client)
-                ssh_key = get_public_key_for_minion()
+                ssh_key = get_public_key_from_file('seed/resources/master_public_keys.sh')
                 ssh_key.run(libcloud_node, ssh_client)
 
                 for failed_step in msd.steps:

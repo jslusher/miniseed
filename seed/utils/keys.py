@@ -39,8 +39,9 @@ def get_public_key(public_key_path=None):
 
     return buffer
 
-def get_public_key_for_minion(public_key_path=None):
+def get_public_key_from_file(public_key_path=None):
     public_key_path = public_key_path or os.path.expanduser("~/.ssh/id_rsa.pub")
+    print "public_key_path: %s" % public_key_path
     if not os.path.exists(public_key_path):
         logger.error("File does not exist. %s" % public_key_path)
         return None

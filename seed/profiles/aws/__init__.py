@@ -5,8 +5,14 @@ from seed.profiles.aws.constants import i386 as AWS_i386
 from seed.profiles.aws.constants import x86_64 as AWS_x86_64
 import os
 import json
+from seed import settings
+
+domain = "dev.next.opinionlab.com"
+route53_key = settings.ROUTE53_KEY
+route53_secret = settings.ROUTE53_SECRET
 
 master_profile = {
+    "profile_name": "salt_master",
     "driver": AWS_x86_64.driver,
     "ami": AWS_x86_64.ami,
     "ami_user": AWS_x86_64.user,
@@ -58,13 +64,14 @@ master_profile = {
     "size": "t1.micro",
     "tags": ["master", "dev", "salt"],
     "init_scripts": ["master_init.sh",
-                    # "install_m2crypto.sh",
                     "development_tools_group_install.sh",
-                    "postgres_install.sh", ],
+                    "postgres_install.sh"],
+    "DNS_script": "seed/resources/register_master_DNS.py"
     }
 
 minion_profile = master_profile.copy()
 minion_profile.update({
+    "profile_name": "salt-minion-i386",
     "keypair": {
         "name": "salt-dev-minion",
         "local_path": os.path.expanduser("~/.ssh/olab/salt-dev-minion"),
@@ -77,6 +84,7 @@ minion_profile.update({
 
 minion64_profile = master_profile.copy()
 minion64_profile.update({
+    "profile_name": "salt-minion-x86_64",
     "keypair": {
         "name": "salt-dev-minion",
         "local_path": os.path.expanduser("~/.ssh/olab/salt-dev-minion"),

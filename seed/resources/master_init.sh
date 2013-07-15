@@ -4,6 +4,8 @@ sudo yum install bash-completion -y
 sudo yum install system-config-firewall-base -y
 sudo yum install salt salt-master -y
 sudo yum install git -y
+sudo yum install python-pip -y
+sudo pip install --upgrade boto 
 echo "Generating SSH Keys"
 rm -rf ~/.ssh/id_rsa
 rm -rf ~/.ssh/id_rsa.pub
