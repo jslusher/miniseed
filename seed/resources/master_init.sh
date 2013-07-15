@@ -6,12 +6,15 @@ sudo yum install salt salt-master -y
 sudo yum install git -y
 sudo yum install python-pip -y
 sudo pip install --upgrade boto 
+
+#This command references the python file that registers the new master's internal IP with route53
+r53_register_command.sh
+
 echo "Generating SSH Keys"
 rm -rf ~/.ssh/id_rsa
 rm -rf ~/.ssh/id_rsa.pub
 ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N '' -q
 echo "Setting up firewall"
-sudo yum install rsyslog -y
 
 # File Roots
 #sudo echo "file_roots:" >> /etc/salt/master

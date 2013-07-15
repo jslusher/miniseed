@@ -7,7 +7,7 @@ import os
 import json
 from seed import settings
 
-domain = "dev.next.opinionlab.com"
+domain = "dev.next.opinionlab.com."
 route53_key = settings.ROUTE53_KEY
 route53_secret = settings.ROUTE53_SECRET
 
@@ -66,7 +66,11 @@ master_profile = {
     "init_scripts": ["master_init.sh",
                     "development_tools_group_install.sh",
                     "postgres_install.sh"],
-    "DNS_script": "seed/resources/register_master_DNS.py"
+    "DNS_script": "seed/resources/register_master_DNS.py",
+    "DNS_command": "seed/resources/r53_register_command.sh",
+    "r53_domain": domain,
+    "r53_key": route53_key,
+    "r53_secret": route53_secret
     }
 
 minion_profile = master_profile.copy()
