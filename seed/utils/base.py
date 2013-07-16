@@ -193,12 +193,14 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
         timeout=int(settings.NETWORK_TIMEOUT),)
 
     attempts = 0
+    ##This bgins the DNS register process
     while True:
         time.sleep(5)
         if seed_profile.profile_name == "salt_master": 
             dns_attempts = 0
-            logger.info("Attempts to connect: %s" % dns_attempts)
+            logger.info("Number of attempts to connect: %s" % dns_attempts)
             try:
+                logger.info("Attemping to connect to new node.")
                 ssh_client.connect() 
             except Exception as error:
                 logger.info("DNS register ssh connection failed, trying again")
@@ -222,8 +224,6 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                 r53_key = seed_profile.r53_key
                 r53_secret = seed_profile.r53_secret
                 w_command = open(dns_command, 'w')
-                #w_command.write("sudo python register_master_DNS.py '{}' '{}' '{}'".format(domain, r53_key, r53_secret)) 
-                #w_command.write("sudo python register_master_DNS.py '%s' '%s' '%s'" % (domain, r53_key, r53_secret))
                 w_command.write("sudo python register_master_DNS.py '%(domain)s' '%(r53_key)s' '%(r53_secret)s'" % 
                     {'domain': domain,
                     'r53_key': r53_key,
@@ -249,6 +249,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
             print "%s isn't a master." % seed_profile.profile_name
             logger.warn("%s isn't a master." % seed_profile.profile_name)
             break
+    ##This beings the deployment of init_scripts from water_machines
     while True:
         time.sleep(5)
         try:
