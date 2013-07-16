@@ -53,7 +53,7 @@ if __name__ == '__main__':
 <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2012-02-29/">
    <ChangeBatch>
        <Comment>API call from newly spawned salt-master to delete  old internal
-           IP to domain for minions</Comment>
+           IP to domain to make way for the register call</Comment>
       <Changes>
          <Change>
             <Action>DELETE</Action>
