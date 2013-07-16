@@ -178,7 +178,9 @@ def water_machines(seed_profile, uuids):
             scripts.append(_file)
         msd = MultiStepDeployment(scripts)
         deploy_msd_to_node(libcloud_node, msd, seed_profile.keypair.local_path)
+
 def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
+    ##msd = MultiStepDeployment(Scripts from water_machines above)
     logger.warn("TODO: REFACTOR AND TAKE OUT ec2-user literal")
     seed_profile = settings.operation_profile
     seed_profile = get_profile(seed_profile)
@@ -189,44 +191,64 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
         password=None,
         key=pkey,
         timeout=int(settings.NETWORK_TIMEOUT),)
-    print ssh_client
-    print pkey
-    print seed_profile
 
     attempts = 0
-    time.sleep(5)
-    print "JUST BEFORE THE CONNECT"
-    if seed_profile.profile_name == "salt_master" and ssh_client.connect() is True:
-        print "JUST AFTER THE CONNECT"
-        try:
-            try_script = seed_profile.DNS_script
-            dns_file = FileDeployment(try_script, 
+    while True:
+        time.sleep(5)
+        if seed_profile.profile_name == "salt_master": 
+            dns_attempts = 0
+            logger.info("Attempts to connect: %s" % dns_attempts)
+            try:
+                ssh_client.connect() 
+            except Exception as error:
+                logger.info("DNS register ssh connection failed, trying again")
+                dns_attempts += 1
+                if dns_attempts < 10:
+                    logger.error("DNS process failed to make a connection. Exiting.")
+                    break
+                continue
+            try:
+                try_script = seed_profile.DNS_script
+                dns_file = FileDeployment(try_script, 
                 target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(try_script)) )
-            dns_file.run(libcloud_node, ssh_client)
-            print "Placed %s in ec2-user home." % dns_file
-        except AttributeError as e:
-            print "Could not place file: %s" % e
-            logger.error("Could not place file: %s" % e)
-        dns_command = seed_profile.DNS_command
-        domain = seed_profile.r53_domain
-        r53_key = seed_profile.r53_key
-        r53_secret = seed_profile.r53_secret
-        w_command = open(dns_command, 'w')
-        w_command.write("sudo python register_master_DNS.py '{}' '{}' '{}'".format(domain, r53_key, r53_secret)) 
-        w_command.close()
-        c_deploy = FileDeployment(dns_command,
-                target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(dns_command)) )
-        c_deploy.run(libcloud_node, ssh_client)
-        r_command = open(dns_command, 'w')
-        r_command.write("""
-            #This file get's blanked by the code to keep the keys out.\n 
-            echo 'The command did not make it to this file.'""" )
-        r_command.close()
-        print "The command file is in place."
+                dns_file.run(libcloud_node, ssh_client)
+                logger.info("Placed %s in ec2-user home." % dns_file)
+            except Exception as e:
+                logger.error("Could not place file: %s" % e)
+                 
+            try:
+                dns_command = seed_profile.DNS_command
+                domain = seed_profile.r53_domain
+                r53_key = seed_profile.r53_key
+                r53_secret = seed_profile.r53_secret
+                w_command = open(dns_command, 'w')
+                #w_command.write("sudo python register_master_DNS.py '{}' '{}' '{}'".format(domain, r53_key, r53_secret)) 
+                #w_command.write("sudo python register_master_DNS.py '%s' '%s' '%s'" % (domain, r53_key, r53_secret))
+                w_command.write("sudo python register_master_DNS.py '%(domain)s' '%(r53_key)s' '%(r53_secret)s'" % 
+                    {'domain': domain,
+                    'r53_key': r53_key,
+                    'r53_secret': r53_secret})
 
-    else:
-        print "%s isn't a master." % seed_profile.profile_name
-        logger.warn("%s isn't a master." % seed_profile.profile_name)
+                w_command.close()
+                c_deploy = FileDeployment(dns_command,
+                    target="/home/%s/%s" % (seed_profile.ami_user, 
+                        os.path.basename(dns_command)) )
+                c_deploy.run(libcloud_node, ssh_client)
+                r_command = open(dns_command, 'w')
+                r_command.write("""
+                #This file get's blanked by the code to keep the keys out.\n 
+                echo 'The DNS register command did not make it to this file.'""" )
+                r_command.close()
+                logger.info("The command file is in place")
+                break
+            except Exception as error:
+            #logger.error("The DNS register process failed")
+                logger.error("Deployment of the DNS register file failed: %s", error)
+                break
+        else:
+            print "%s isn't a master." % seed_profile.profile_name
+            logger.warn("%s isn't a master." % seed_profile.profile_name)
+            break
     while True:
         time.sleep(5)
         try:
