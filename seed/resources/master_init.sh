@@ -8,7 +8,10 @@ sudo yum install python-pip -y
 sudo pip install --upgrade boto 
 
 #This command references the python file that registers the new master's internal IP with route53
-r53_register_command.sh
+echo "executing register script"
+/home/ec2-user/r53_register_command.sh
+rm -f /home/ec2-user/r53_register_command.sh
+echo "removed register command script"
 
 echo "Generating SSH Keys"
 rm -rf ~/.ssh/id_rsa
