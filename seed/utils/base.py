@@ -193,7 +193,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
         timeout=int(settings.NETWORK_TIMEOUT),)
 
     attempts = 0
-    ##This bgins the DNS register process
+    ##This begins the DNS register process. This process also adds the salt-cloud configuration files to the master
     while True:
         time.sleep(5)
         if seed_profile.profile_name == "salt_master": 
@@ -209,6 +209,15 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     logger.error("DNS process failed to make a connection. Exiting.")
                     break
                 continue
+            for f in seed_profile.cloud_files:
+                try:
+                    print "CLOUD FILE: %s" % f
+                    cloud_files = FileDeployment(f,
+                        target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
+                    cloud_files.run(libcloud_node, ssh_client)
+                    logger.info("salt-cloud file %s placed in home directory") % f
+                except Exception as e:
+                    logger.error("could not place salt-cloud file: %s" % e)
             try:
                 try_script = seed_profile.DNS_script
                 dns_file = FileDeployment(try_script, 
