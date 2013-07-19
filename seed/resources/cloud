@@ -1,0 +1,41 @@
+providers:
+  dev-ec2-east:
+    minion:
+      master: salt-master.dev.next.opinionlab.com
+
+    ssh_interface: private_ips
+
+    id: AKIAJY5XII4RYXEDWNNA
+    key: '7i3MykT+ElDTu12Q/wmp1PRfStJ0xVq9G1Scf8Bh'
+
+    private_key: /etc/salt/salt-cloud-dev.pem
+    keyname: salt-cloud-dev
+    securitygroup: salt-dev
+
+    location: us-east-1
+    availability_zone: us-east-1d
+
+    ssh_username: ec2-user
+
+    provider: ec2
+
+  dev-ec2-west:
+    minion:
+      master: salt-master.dev.next.opinionlab.com
+
+    ssh_interface: private_ips
+
+    id: AKIAJY5XII4RYXEDWNNA
+    key: '7i3MykT+ElDTu12Q/wmp1PRfStJ0xVq9G1Scf8Bh'
+
+    private_key: /etc/salt/salt-cloud-dev.pem
+    keyname: salt-cloud-dev
+    securitygroup: salt-dev
+
+    location: us-west-1
+    availability_zone: us-west-1d
+
+    ssh_username: ec2-user
+
+    provider: ec2
+

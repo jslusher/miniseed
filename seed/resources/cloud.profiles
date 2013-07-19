@@ -1,0 +1,18 @@
+ec2_east_micro:
+  provider: dev-ec2-east
+  image: ami-b71078de
+  size: Micro Instance
+  ssh_username: ec2-user
+  rename_on_destroy: True
+ec2_east_large:
+  provider: dev-ec2-east
+  image: ami-b71078de
+  size: Large Instance
+  ssh_username: ec2-user
+  rename_on_destroy: True
+ec2_west_micro:
+  provider: dev-ec2-west
+  image: ami-674f6122
+  size: Micro Instance
+  ssh_username: ec2-user
+  rename_on_destroy: True

@@ -1,0 +1,92 @@
+# Note: This example is for /etc/salt/cloud
+
+providers:
+  dev-next-ec2-public-ips:
+    # Set up the location of the salt master
+    #
+    minion:
+      master: salt-master.dev.next.opinionlab.com
+
+    # Specify whether to use public or private IP for deploy script.
+    #
+    # Valid options are:
+    #     private_ips - The salt-master is also hosted with EC2
+    #     public_ips - The salt-master is hosted outside of EC2
+    #
+    ssh_interface: private_ips
+
+    # Set the EC2 access credentials (see below)
+    #
+    id: AKIAJxxxxxxATHSY
+    key: '7i3MykT+Elxxxxxxxx/wmp1PRfStJ0cwxxxxxxxxVq9G1Scf8Bh'
+
+    # Make sure this key is owned by root with permissions 0400.
+    #
+    private_key: /etc/salt/salt-cloud-dev.pem
+    keyname: salt-cloud-dev
+    securitygroup: salt-dev
+
+    # Optionally configure default region
+    #
+    location: us-east-1
+    availability_zone: us-east-1d
+
+    # Configure which user to use to run the deploy script. This setting is
+    # dependent upon the AMI that is used to deploy. It is usually safer to
+    # configure this individually in a profile, than globally. Typical users
+    # are:
+    #
+    # Amazon Linux -> ec2-user
+    # RHEL         -> ec2-user
+    # CentOS       -> ec2-user
+    # Ubuntu       -> ubuntu
+    #
+    ssh_username: ec2-user
+
+    provider: ec2
+
+
+  my-ec2-southeast-private-ips:
+    # Set up the location of the salt master
+    #
+    minion:
+      master: saltmaster.example.com
+
+    # Specify whether to use public or private IP for deploy script.
+    #
+    # Valid options are:
+    #     private_ips - The salt-master is also hosted with EC2
+    #     public_ips - The salt-master is hosted outside of EC2
+    #
+    ssh_interface: private_ips
+
+    # Set the EC2 access credentials (see below)
+    #
+    id: HJGRYCILJLKJYG
+    key: 'kdjgfsgm;woormgl/aserigjksjdhasdfgn'
+
+    # Make sure this key is owned by root with permissions 0400.
+    #
+    private_key: /etc/salt/my_test_key.pem
+    keyname: my_test_key
+    securitygroup: default
+
+    # Optionally configure default region
+    #
+    location: ap-southeast-1
+    availability_zone: ap-southeast-1b
+
+    # Configure which user to use to run the deploy script. This setting is
+    # dependent upon the AMI that is used to deploy. It is usually safer to
+    # configure this individually in a profile, than globally. Typical users
+    # are:
+    #
+    # Amazon Linux -> ec2-user
+    # RHEL         -> ec2-user
+    # CentOS       -> ec2-user
+    # Ubuntu       -> ubuntu
+    #
+    ssh_username: ec2-user
+
+    provider: ec2
+
