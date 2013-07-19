@@ -202,6 +202,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
             try:
                 logger.info("Attemping to connect to new node.")
                 ssh_client.connect() 
+                logger.info("DNS SSH connection successful")
             except Exception as error:
                 logger.info("DNS register ssh connection failed, trying again")
                 dns_attempts += 1
@@ -209,21 +210,25 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     logger.error("DNS process failed to make a connection. Exiting.")
                     break
                 continue
+            print "JUST BEFORE CLOUD FILE"
+            print "CLOUD FILES: %s" % seed_profile.cloud_files
             for f in seed_profile.cloud_files:
                 print "SALT CLOUD FILE: %s" % f
                 try:
                     cloud_files = FileDeployment(f,
                         target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
+                    logger.info("cloud_files: %s" % cloud_files)
                     cloud_files.run(libcloud_node, ssh_client)
-                    logger.info("salt-cloud file %s placed in home directory") % f
+                    logger.info("salt-cloud file %s placed in home directory" % f)
                 except Exception as e:
                     logger.error("could not place salt-cloud file: %s" % e)
+            print "JUST BEFORE DNS PROCESS"
             try:
                 try_script = seed_profile.DNS_script
                 dns_file = FileDeployment(try_script, 
                 target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(try_script)) )
                 dns_file.run(libcloud_node, ssh_client)
-                logger.info("Placed %s in ec2-user home." % dns_file)
+                logger.info("Placed %s ." % dns_file.target)
             except Exception as e:
                 logger.error("Could not place file: %s" % e)
                  

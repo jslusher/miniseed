@@ -53,7 +53,7 @@ master_profile = {
     "r53_domain": domain,
     "r53_key": route53_key,
     "r53_secret": route53_secret,
-    "cloud_files": ["seed/resources/cloud", "seed/resources/cloud.profiles"]
+    "cloud_files": ["seed/resources/cloud", "seed/resources/cloud.profiles"],
     }
 
 minion_profile = master_profile.copy()
