@@ -205,13 +205,13 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
             except Exception as error:
                 logger.info("DNS register ssh connection failed, trying again")
                 dns_attempts += 1
-                if dns_attempts < 10:
+                if dns_attempts > 10:
                     logger.error("DNS process failed to make a connection. Exiting.")
                     break
                 continue
             for f in seed_profile.cloud_files:
+                print "SALT CLOUD FILE: %s" % f
                 try:
-                    print "CLOUD FILE: %s" % f
                     cloud_files = FileDeployment(f,
                         target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
                     cloud_files.run(libcloud_node, ssh_client)

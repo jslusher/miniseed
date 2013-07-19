@@ -26,8 +26,24 @@ master_profile = {
     "security_group": {
         "name": "salt-dev",
         "description": "auto-generated",
-        "ports": get_aws_ports()
-    },
+        #"ports": get_aws_ports()
+        "ports": [
+            {
+            "from_port": "22",
+            "to_port": None,
+            "protocol": "tcp",
+            "cidr_ip": "0.0.0.0/0",
+            },{
+            "from_port": "4505",
+            "to_port": None,
+            "protocol": "tcp",
+            "cidr_ip": "0.0.0.0/0",
+            },{
+            "from_port": "4506",
+            "to_port": None,
+            "protocol": "tcp",
+            "cidr_ip": "0.0.0.0/0",
+            }]},
     "region": "us-east-1d",
     "size": "t1.micro",
     "tags": ["master", "dev", "salt"],
