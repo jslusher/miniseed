@@ -2,6 +2,7 @@
 *.pyc
 docs/_build/*
 keys.sh
+salt-cloud-dev.pem
 *.swp
 *.pid
 *.logs

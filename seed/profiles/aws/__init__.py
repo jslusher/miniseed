@@ -46,16 +46,15 @@ master_profile = {
             }]},
     "region": "us-east-1d",
     "size": "t1.micro",
+    "salt_cloud_files": ("cloud", "cloud.profiles", ), 
     "tags": ["master", "dev", "salt"],
     "init_scripts": ["master_init.sh"],
-    "DNS_script": "seed/resources/register_master_DNS.py",
-    "DNS_command": "seed/resources/r53_register_command.sh",
+    "DNS_script": "register_master_DNS.py",
+    "DNS_command": "r53_register_command.sh",
     "r53_domain": domain,
     "r53_key": route53_key,
     "r53_secret": route53_secret,
-    "cloud_files": ["seed/resources/cloud", "seed/resources/cloud.profiles"],
     }
-
 minion_profile = master_profile.copy()
 minion_profile.update({
     "profile_name": "salt-minion-i386",
@@ -84,7 +83,6 @@ minion64_profile.update({
     "ami_user": AWS_x86_64.user,
     "ami_group": AWS_x86_64.group
     })
-
 
 available_profiles = {
     'aws_master': master_profile.copy(),

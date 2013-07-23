@@ -211,20 +211,19 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     break
                 continue
             print "JUST BEFORE CLOUD FILE"
-            print "CLOUD FILES: %s" % seed_profile.cloud_files
-            for f in seed_profile.cloud_files:
+            for f in seed_profile.salt_cloud_files:
                 print "SALT CLOUD FILE: %s" % f
                 try:
-                    cloud_files = FileDeployment(f,
+                    cloud_files = FileDeployment(find_script(f),
                         target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
-                    logger.info("cloud_files: %s" % cloud_files)
+                    logger.info("salt-cloud_files: %s" % cloud_files)
                     cloud_files.run(libcloud_node, ssh_client)
                     logger.info("salt-cloud file %s placed in home directory" % f)
                 except Exception as e:
                     logger.error("could not place salt-cloud file: %s" % e)
             print "JUST BEFORE DNS PROCESS"
             try:
-                try_script = seed_profile.DNS_script
+                try_script = find_script(seed_profile.DNS_script)
                 dns_file = FileDeployment(try_script, 
                 target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(try_script)) )
                 dns_file.run(libcloud_node, ssh_client)
@@ -233,7 +232,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                 logger.error("Could not place file: %s" % e)
                  
             try:
-                dns_command = seed_profile.DNS_command
+                dns_command = find_script(seed_profile.DNS_command)
                 domain = seed_profile.r53_domain
                 r53_key = seed_profile.r53_key
                 r53_secret = seed_profile.r53_secret
@@ -270,7 +269,8 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
             if ssh_client.connect() is True:
                 # Deploy files to libcloud_node
                 msd.run(libcloud_node, ssh_client)
-                ssh_key = get_public_key_from_file('seed/resources/master_public_keys.sh')
+                pubkey_file = find_script('master_public_keys.sh')
+                ssh_key = get_public_key_from_file(pubkey_file)
                 ssh_key.run(libcloud_node, ssh_client)
 
                 for failed_step in msd.steps:
