@@ -182,6 +182,7 @@ def water_machines(seed_profile, uuids):
 def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     ##msd = MultiStepDeployment(Scripts from water_machines above)
     logger.warn("TODO: REFACTOR AND TAKE OUT ec2-user literal")
+    logger.warn("TODO: ABSTRACT salt-cloud-dev.pem and cloud files to keys.sh")
     seed_profile = settings.operation_profile
     seed_profile = get_profile(seed_profile)
     pkey = seed_profile.keypair.local_path
@@ -210,18 +211,14 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     logger.error("DNS process failed to make a connection. Exiting.")
                     break
                 continue
-            print "JUST BEFORE CLOUD FILE"
             for f in seed_profile.salt_cloud_files:
-                print "SALT CLOUD FILE: %s" % f
                 try:
                     cloud_files = FileDeployment(find_script(f),
                         target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
-                    logger.info("salt-cloud_files: %s" % cloud_files)
                     cloud_files.run(libcloud_node, ssh_client)
                     logger.info("salt-cloud file %s placed in home directory" % f)
                 except Exception as e:
                     logger.error("could not place salt-cloud file: %s" % e)
-            print "JUST BEFORE DNS PROCESS"
             try:
                 try_script = find_script(seed_profile.DNS_script)
                 dns_file = FileDeployment(try_script, 
@@ -255,7 +252,6 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                 logger.info("The command file is in place")
                 break
             except Exception as error:
-            #logger.error("The DNS register process failed")
                 logger.error("Deployment of the DNS register file failed: %s", error)
                 break
         else:

@@ -1,0 +1,13 @@
+ec2_east_micro:
+  - dev-fes-prx-gpp2:
+      grains:
+        environment: dev
+        servergroup: feserver
+        servertype: proxy
+        serverrole: graphite_pxy
+  - dev-int-mon-grp2:
+      grains:
+        environment: dev
+        servergroup: intserver
+        servertype: monitoring
+        serverrole: graphite

@@ -18,7 +18,10 @@ echo "removed register command script"
 echo "Placing salt-cloud files"
 sudo mv /home/ec2-user/cloud /etc/salt/cloud
 sudo mv /home/ec2-user/cloud.profiles /etc/salt/cloud.profiles
+sudo mv /home/ec2-user/dev_map /etc/salt/.
 sudo mv /home/ec2-user/salt-cloud-dev.pem /etc/salt/salt-cloud-dev.pem
+sudo chown ec2-user.ec2-user /etc/salt/salt-cloud-dev.pem
+sudo chmod 600 /etc/salt/salt-cloud-dev.pem
 
 echo "Generating SSH Keys"
 rm -rf ~/.ssh/id_rsa
@@ -55,13 +58,16 @@ sudo yum -y groupinstall "Development Tools"
 sudo yum -y install openssl-devel
 sudo yum -y install supervisor
 
-"Initializing git repo in /srv"
+echo "Initializing git repo in /srv"
 sudo su - git -c "cd /srv && git init" 
 sudo chown -R git.git /srv
 sudo mkdir /srv/salt
-sudo chown -R git.git /srv
+sudo chown -R git.git /srv/salt
 
 ## to include later if Django-based GUI is needed 
 #sudo yum -y install postgresql postgresql-devel postgresql-server
+
+echo "Running salt-cloud on default map_file."
+sudo salt-cloud -y -m /etc/salt/dev_map
 
 exit 0 # manually flag that we're done executing this script
