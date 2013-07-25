@@ -1,13 +1,24 @@
 ec2_east_micro:
-  - dev-fes-prx-gpp2:
-      grains:
-        environment: dev
-        servergroup: feserver
-        servertype: proxy
-        serverrole: graphite_pxy
-  - dev-int-mon-grp2:
-      grains:
-        environment: dev
-        servergroup: intserver
-        servertype: monitoring
-        serverrole: graphite
+  - aws-dev-int-cin-gtr1: 
+      grains: 
+        infrastructure: aws 
+        environment: dev 
+        servergroup: intserver 
+        servertype: contentint 
+        serverrole: git_repo 
+ec2_east_micro:
+  - aws-dev-fes-prx-opp1: 
+      grains: 
+        infrastructure: aws 
+        environment: dev 
+        servergroup: feserver 
+        servertype: proxy 
+        serverrole: olpub_pxy 
+ec2_east_micro:
+  - aws-dev-int-mon-grp1: 
+      grains: 
+        infrastructure: aws 
+        environment: dev 
+        servergroup: intserver 
+        servertype: monitoring 
+        serverrole: graphite 
