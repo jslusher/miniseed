@@ -55,14 +55,15 @@ except ImproperlyConfigured:
         logger.debug("Django env not detected, falling back to settings. ")
 
     from seed.base import \
-        define_arguments, AWS_ACCESS, AWS_SECRET, ROUTE53_KEY, ROUTE53_SECRET
-
+        define_arguments, AWS_ACCESS, AWS_SECRET, ROUTE53_KEY, ROUTE53_SECRET,\
+        GIT_PKEY
     settings = define_arguments()
     setattr(settings, 'DEBUG', True)
     setattr(settings, 'AWS_ACCESS', AWS_ACCESS)
     setattr(settings, 'AWS_SECRET', AWS_SECRET)
     setattr(settings, 'ROUTE53_KEY', ROUTE53_KEY)
     setattr(settings, 'ROUTE53_SECRET', ROUTE53_SECRET)
+    setattr(settings, 'GIT_PKEY', GIT_PKEY)
     setattr(settings, 'BITBUCKET_ID', os.environ.get("BITBUCKET_ID", None))
     setattr(settings, 'BITBUCKET_PASSWORD', os.environ.get("BITBUCKET_PASSWORD", None))
     setattr(settings, 'BULBASAUR_URI', 'https://api.bitbucket.org/1.0/repositories/importthis/bulbasaur/deploy-keys/')

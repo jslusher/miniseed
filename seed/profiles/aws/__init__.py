@@ -6,11 +6,10 @@ from seed.profiles.aws.constants import i386 as AWS_i386, get_aws_ports, \
 import os
 import json
 from seed import settings
-
 domain = "dev.next.opinionlab.com."
 route53_key = settings.ROUTE53_KEY
 route53_secret = settings.ROUTE53_SECRET
-
+git_rsa_key = settings.GIT_PKEY
 master_profile = {
     "profile_name": "salt_master",
     "driver": AWS_x86_64.driver,
@@ -51,7 +50,7 @@ master_profile = {
             }]},
     "region": "us-east-1d",
     "size": "t1.micro",
-    "salt_cloud_files": ("cloud", "cloud.profiles", "dev_map", "salt-cloud-dev.pem"), 
+    "salt_cloud_files": ("cloud", "cloud.profiles", "dev_map", "salt-cloud-dev.pem", "salt_master_add.txt"), 
     "tags": ["master", "dev", "salt"],
     "init_scripts": ["master_init.sh"],
     "DNS_script": "register_master_DNS.py",
@@ -59,6 +58,7 @@ master_profile = {
     "r53_domain": domain,
     "r53_key": route53_key,
     "r53_secret": route53_secret,
+    "git_rsa_key": os.path.expanduser(git_rsa_key)
     }
 minion_profile = master_profile.copy()
 minion_profile.update({

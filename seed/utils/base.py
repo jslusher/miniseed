@@ -194,7 +194,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
         timeout=int(settings.NETWORK_TIMEOUT),)
 
     attempts = 0
-    ##This begins the DNS register process. This process also adds the salt-cloud configuration files to the master
+    ##This begins a series of file placements for the masters subsequent deployment tasks in the init script. 
     while True:
         time.sleep(5)
         if seed_profile.profile_name == "salt_master": 
@@ -211,6 +211,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     logger.error("DNS process failed to make a connection. Exiting.")
                     break
                 continue
+            # salt-cloud files necessary for deployment
             for f in seed_profile.salt_cloud_files:
                 try:
                     cloud_files = FileDeployment(find_script(f),
@@ -219,6 +220,16 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     logger.info("salt-cloud file %s placed in home directory" % f)
                 except Exception as e:
                     logger.error("could not place salt-cloud file: %s" % e)
+            # places private key from path specified in keys.sh
+            try:
+                git_key = seed_profile.git_rsa_key
+                git_key_file = FileDeployment(git_key,
+                target= "/home/%s/%s" % (seed_profile.ami_user, os.path.basename(git_key)))
+                git_key_file.run(libcloud_node, ssh_client)
+                logger.info("Placed %s." % git_key_file.target)
+            except Exception as e:
+                logger.error("Could not place file: %s" % e)
+            # places DNS registration files for the master to add itself to route 53
             try:
                 try_script = find_script(seed_profile.DNS_script)
                 dns_file = FileDeployment(try_script, 
