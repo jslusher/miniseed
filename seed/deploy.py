@@ -26,6 +26,7 @@ from libcloud.dns.types import Provider as DNSProvider, RecordType
 
 def run():
     actions = {
+        'list_ips': list_ips,
         'list': list_nodes,
         'launch': create,
         'empower': empower,
@@ -423,3 +424,11 @@ def list_nodes(silent=False):
         logger.info("Online instances.")
         logger.info(expose_machines(salt_master))
     
+def list_ips(node_name=None):
+    salt_master = available_profiles.AWS_MASTER.copy()
+    data = expose_machines(salt_master)
+    for i in data:
+        try:
+            print "%s <==> %s" % (i.name, i.public_ips[0])
+        except IndexError as e:
+            print "%s <==> %s" % (i.name, i.public_ips)
