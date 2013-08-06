@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 from seed import settings
 from seed.profiles import available_profiles, SEED_PROFILES, get_profile
 from seed.utils import seed_machine, water_machines, \
-    kill_machines, freeze_machines, reanimate_machines, \
-    expose_machines, empower_node_with_salt_mastery, terminate_node
+    freeze_machines, reanimate_machines, expose_machines
 from seed.utils.rendering import generate_source_keyfile
 from seed.utils.salt import attach_minion_to_master
 from seed.shortcuts import obtain_driver_by_name

@@ -125,36 +125,6 @@ def execute_files_on_minion(deployment_files, libcloud_node, ssh_client):
             command = "chmod 444 %s" % deployment_file.target
             execute_command_for_session(command, session)
 
-def generate_vinewhip_deployment_scripts():
-    from seed.utils.rendering import generate_deploy_keys_bootstrap_script, \
-        generate_source_keyfile, decorate_shell_with_keyfile, \
-        generate_vinewhip_deployment_scripts, \
-        generate_vinewhip_instance, generate_postgresql_env, \
-        generate_vinewhip_env_standup, \
-        generate_nginx_env
-    scripts = []
-    scripts.append(find_script('bootstrap_python_env.sh')) # Setup virtual env
-    scripts.append(generate_deploy_keys_bootstrap_script()) # setup request
-    scripts.append(generate_source_keyfile())
-    scripts.append(decorate_shell_with_keyfile())
-    scripts.append(generate_vinewhip_deployment_keys()) # setup deploy-keys
-    scripts.append(generate_vinewhip_instance()) # setup vinewhip
-    scripts.append(generate_postgresql_env())
-    scripts.append(generate_vinewhip_env_standup())
-    scripts.append(generate_nginx_env())
-    # setup leechseed
-    return scripts
-
-def empower_node_with_salt_mastery(libcloud_node):
-    driver = libcloud_node.driver
-    logger.debug("Generating deployment script")
-    scripts = generate_vinewhip_deployment_scripts()
-    msd = MultiStepDeployment([FileDeployment(script, 
-        target="/tmp/%s" % script.split('/')[-1:][0]) 
-            for script in scripts])
-
-    deploy_msd_to_node(libcloud_node, msd)
-
 
 def water_machines(seed_profile, uuids):
     """
@@ -319,23 +289,6 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
 
     ssh_client.close()    
 
-def terminate_node(libcloud_node):
-    pass
-
-def kill_machines(seed_profile, uuids=[], destroy_volume=False):
-    """
-    Remove the machine
-    """
-
-    if seed_profile.driver == 'aws':
-        nodes = obtain_aws_nodes(uuids)
-        results = []
-        for node in nodes:
-            if destroy_volume:
-                raise NotImplementedError("Destroying Volumn is not implemented")
-            results.append(node.destroy())
-
-        return results
 
 def freeze_machines(seed_profile, uuid):
     """
