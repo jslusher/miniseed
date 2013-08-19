@@ -41,7 +41,7 @@ sudo lokkit -p 22:tcp -p 4506:tcp -p 4505:tcp -p 8000:tcp
 sudo systemctl restart  iptables.service
 
 echo "Setting up salt"
-sudo cat /home/ec2-user/salt_master_add.txt >> /etc/salt/master
+sudo cp /home/ec2-user/salt_master_add.txt /etc/salt/master
 sudo salt-master -d -l info
 sudo systemctl enable salt-master.service
 
@@ -50,8 +50,13 @@ echo "Pulling salt-states from github"
 touch /home/ec2-user/.ssh/known_hosts
 ssh-keyscan -t rsa,dsa github.com 2>&1 | sort -u - ~/.ssh/known_hosts > ~/.ssh/tmp_hosts
 cat ~/.ssh/tmp_hosts >> ~/.ssh/known_hosts
+ssh-keyscan -t rsa,dsa git-local.opinionlab.com 2>&1 | sort -u - ~/.ssh/known_hosts > ~/.ssh/tmp_hosts
+cat ~/.ssh/tmp_hosts >> ~/.ssh/known_hosts
 sudo chown ec2-user.ec2-user /srv
+echo "Pulling from github"
 cd /srv && git clone git@github.com:opinionlab/salt.git
+echo "Pulling sub_files from local repo"
+cd /srv && git clone ec2-user@git-local.opinionlab.com:/opt/git/sub_files
 
 echo "Running salt-cloud on default map_file."
 sudo salt-cloud -y -m /etc/salt/dev_map

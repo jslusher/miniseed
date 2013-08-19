@@ -10,7 +10,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from seed.base import define_arguments, AWS_ACCESS, AWS_SECRET, \
-                      ROUTE53_KEY, ROUTE53_SECRET, GIT_PKEY
+                      ROUTE53_KEY, ROUTE53_SECRET, GIT_PKEY, SALT_CLOUD_KEY
+
 
 def build_logger(name=None):
     debug_log_file = "/tmp/seeder_%s.log" % name or 'None'
@@ -31,6 +32,7 @@ setattr(settings, 'AWS_SECRET', AWS_SECRET)
 setattr(settings, 'ROUTE53_KEY', ROUTE53_KEY)
 setattr(settings, 'ROUTE53_SECRET', ROUTE53_SECRET)
 setattr(settings, 'GIT_PKEY', GIT_PKEY)
+setattr(settings, 'SALT_CLOUD_KEY', SALT_CLOUD_KEY)
 setattr(settings, 'BITBUCKET_ID', os.environ.get("BITBUCKET_ID", None))
 setattr(settings, 'BITBUCKET_PASSWORD', os.environ.get("BITBUCKET_PASSWORD", None))
 setattr(settings, 'BULBASAUR_URI', 'https://api.bitbucket.org/1.0/repositories/importthis/bulbasaur/deploy-keys/')
@@ -42,4 +44,3 @@ setattr(settings, "SSH_PORT", 22)
 setattr(settings, "DNS_DEFAULT", os.environ.get("BULBASAUR_DNS_NAMESPACE", None))
 validate_settings(settings)
 build_logger(settings.name)
-import ipdb; ipdb.set_trace()

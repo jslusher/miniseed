@@ -15,6 +15,7 @@ AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
 ROUTE53_KEY = os.environ.get('ROUTE53_KEY', None)
 ROUTE53_SECRET = os.environ.get('ROUTE53_SECRET', None)
 GIT_PKEY = os.environ.get('GIT_PKEY', None)
+SALT_CLOUD_KEY = os.environ.get('SALT_CLOUD_KEY', None)
 
 def define_arguments():
     parser = argparse.ArgumentParser(description="""
