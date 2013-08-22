@@ -17,10 +17,6 @@ _supported_drivers = {
     'aws': Provider.EC2
 }
 
-def run_salt_command(targets, *args):
-    command = ["salt '%s' %s" % (targets,' '.join(args))]
-    run_local_command(command)
-
 def find_script(file_name):
     return os.path.abspath(os.path.join(settings.RESOURCE_PATH, 
         file_name))
