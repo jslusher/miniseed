@@ -1,36 +1,36 @@
 ec2_east_micro:
-  - aws-dev-int-cin-gtr4: 
+  - aws-dev-int-rep-yum3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
-        servertype: contentint 
-        serverrole: git_repo 
-  - aws-dev-fes-prx-opp4: 
+        servertype: repo 
+        serverrole: yum_repo 
+  - aws-dev-fes-prx-opp3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: feserver 
         servertype: proxy 
         serverrole: olpub_pxy 
-  - aws-dev-int-mon-rsl4: 
+  - aws-dev-int-mon-rsl3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
         servertype: monitoring 
         serverrole: rsyslog 
-  - aws-dev-dat-gpg-pgm4: 
-      grains: 
-        infrastructure: aws 
-        environment: dev 
-        servergroup: datserver 
-        servertype: gen_postgres 
-        serverrole: pg_master 
-  - aws-dev-int-mon-grp4: 
+  - aws-dev-int-mon-grp3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
         servertype: monitoring 
         serverrole: graphite 
+  - aws-dev-int-mon-sen3: 
+      grains: 
+        infrastructure: aws 
+        environment: dev 
+        servergroup: intserver 
+        servertype: monitoring 
+        serverrole: sentry 
