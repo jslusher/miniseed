@@ -152,7 +152,6 @@ def water_machines(seed_profile, uuids):
 def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     ##msd = MultiStepDeployment(Scripts from water_machines above)
     logger.warn("TODO: REFACTOR AND TAKE OUT ec2-user literal")
-    logger.warn("TODO: ABSTRACT salt-cloud-dev.pem and cloud files to keys.sh")
     seed_profile = settings.operation_profile
     seed_profile = get_profile(seed_profile)
     pkey = seed_profile.keypair.local_path

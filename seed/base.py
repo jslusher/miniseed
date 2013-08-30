@@ -9,6 +9,7 @@ import sys
 
 from unittest import TestLoader, TestResult, TextTestRunner
 import logging
+
 logger = logging.getLogger(__name__)
 AWS_ACCESS = os.environ.get('AWS_ACCESS_KEY_ID', None)
 AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
@@ -62,9 +63,9 @@ def define_arguments():
     parser.add_argument('-o', '--output',
         dest="output_path", default=None, type=unicode,
         help="Where to place this output data",)
-    parser.add_argument('-m', '--minion-names',
-        dest="minion_names", default=None, type=unicode,
-        help="The minions that will attach to a master instance", )
+    parser.add_argument('-m', '--map_list',
+        dest="map_list", default=None, type=unicode,
+        help="Specify a shorthand map file that the seeder will populate with the appropriate grains", )
     parser.add_argument('-t', '--template-path', 
         dest="template_path", default=None, type=unicode,
         help="Path to the jinja2 templates", )
@@ -94,7 +95,6 @@ def validate_settings(settings):
 
     if settings.template_path is None:
         settings.template_path = os.path.abspath(os.path.dirname(__file__))
-
 def run_tests(settings):
     test_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests')
     try:

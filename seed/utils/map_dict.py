@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 grn_inf_dict = {
         'aws': 'aws',
         'xen': 'xenserver',

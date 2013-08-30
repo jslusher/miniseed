@@ -30,7 +30,7 @@ if __name__ == '__main__':
          <Change>
             <Action>CREATE</Action>
             <ResourceRecordSet>
-               <Name>salt-master.%s</Name>
+               <Name>salt-master2.%s</Name>
                <Type>A</Type>
                <TTL>300</TTL>
                <ResourceRecords>
@@ -44,7 +44,7 @@ if __name__ == '__main__':
    </ChangeBatch>
 </ChangeResourceRecordSetsRequest>
 """ % (domain, master_ip)
-    salt_master = [s for s in all_rsets if s.name == 'salt-master.%s' % domain]
+    salt_master = [s for s in all_rsets if s.name == 'salt-master2.%s' % domain]
     try:
         salt_master = str(salt_master[0])
         old_ip = re.findall( r'[0-9]+(?:\.[0-9]+){3}', salt_master)
@@ -58,7 +58,7 @@ if __name__ == '__main__':
          <Change>
             <Action>DELETE</Action>
             <ResourceRecordSet>
-               <Name>salt-master.%s</Name>
+               <Name>salt-master2.%s</Name>
                <Type>A</Type>
                <TTL>300</TTL>
                <ResourceRecords>

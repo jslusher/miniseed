@@ -53,7 +53,7 @@ master_profile = {
             }]},
     "region": "us-east-1d",
     "size": "t1.micro",
-    "salt_cloud_files": ("cloud", "cloud.profiles", "dev_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata"), 
+    "salt_cloud_files": ("cloud", "cloud.profiles", "salt_cloud_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata"), 
     "tags": ["master", "dev", "salt"],
     "init_scripts": ["master_init.sh"],
     "DNS_script": "register_master_DNS.py",

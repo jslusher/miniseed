@@ -3,14 +3,11 @@ from __future__ import unicode_literals
 from argparse import Namespace
 import os
 import sys
-from django.core.exceptions import ImproperlyConfigured
-from seed.base import validate_settings
-
 import logging
-logger = logging.getLogger(__name__)
-
-from seed.base import define_arguments, AWS_ACCESS, AWS_SECRET, \
+from seed.base import validate_settings, define_arguments, AWS_ACCESS, AWS_SECRET, \
                       ROUTE53_KEY, ROUTE53_SECRET, GIT_PKEY, SALT_CLOUD_KEY
+
+logger = logging.getLogger(__name__)
 
 
 def build_logger(name=None):
@@ -24,6 +21,7 @@ def build_logger(name=None):
     console_formatter = logging.Formatter("%(name)-20s: %(levelname)-8s %(message)s")
     console.setFormatter(console_formatter)
     logging.getLogger('').addHandler(console)
+    print "debug_log: %s" % debug_log_file
 
 settings = define_arguments()
 setattr(settings, 'DEBUG', True)

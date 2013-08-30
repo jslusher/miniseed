@@ -1,7 +1,7 @@
 providers:
   dev-ec2-east:
     minion:
-      master: salt-master.dev.next.opinionlab.com
+      master: salt-master2.dev.next.opinionlab.com
 
     ssh_interface: private_ips
 

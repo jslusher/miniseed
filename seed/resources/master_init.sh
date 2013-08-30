@@ -23,7 +23,7 @@ echo "removed register command script"
 echo "Placing salt-cloud files"
 sudo mv /home/ec2-user/cloud /etc/salt/cloud
 sudo mv /home/ec2-user/cloud.profiles /etc/salt/cloud.profiles
-sudo mv /home/ec2-user/dev_map /etc/salt/.
+sudo mv /home/ec2-user/salt_cloud_map /etc/salt/.
 sudo mv /home/ec2-user/salt-cloud-dev.pem /etc/salt/salt-cloud-dev.pem
 sudo chown ec2-user.ec2-user /etc/salt/salt-cloud-dev.pem
 sudo chmod 600 /etc/salt/salt-cloud-dev.pem
@@ -59,7 +59,7 @@ echo "Pulling sub_files from local repo"
 cd /srv && git clone ec2-user@git-local.opinionlab.com:/opt/git/sub_files
 
 echo "Running salt-cloud on default map_file."
-sudo salt-cloud -y -m /etc/salt/dev_map
+sudo salt-cloud -y -m /etc/salt/salt_cloud_map
 
 echo "executing salt highstate"
 sudo salt '*' state.highstate > /home/ec2-user/highstate.out
