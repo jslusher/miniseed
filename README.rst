@@ -21,7 +21,7 @@ So you want to share your dev keys?
 Keys.sh
 *******
 
-    You're going to need this to buildout vinewhip. 
+    You're going to need these items to deploy the salt-cloud master:
 
 .. code-block:: bash
 
@@ -36,7 +36,7 @@ Keys.sh
  SALT_CLOUD_KEY=''
  GIT_PKEY=''
 
- BULBASAUR_DNS_NAMESPACE='dev.next.opinionlab.com'
+ DNS_DOMAIN='dev.next.opinionlab.com'
 
  export AWS_ACCESS_KEY_ID
  export AWS_SECRET_ACCESS_KEY
@@ -46,7 +46,7 @@ Keys.sh
  export GIT_PKEY
  export BITBUCKET_ID
  export BITBUCKET_PASSWORD
- export BULBASAUR_DNS_NAMESPACE
+ export DNS_DOMAIN
 
  # Fedora
  #export SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
@@ -68,5 +68,5 @@ Remove a domain from an instance
 ********************************
 .. code-block:: bash
 
-    $ export BULBASAUR_DNS_DEFALUT="dev.next.opinionlab.com"
+    $ export DNS_DOMAIN="dev.next.opinionlab.com"
     $ python -m seed -a remove-domain --provider aws -n bulbasaur

@@ -73,7 +73,7 @@
 
 # Set the default timeout for the salt command and api, the default is 5
 # seconds
-#timeout: 5
+timeout: 60
 
 # The loop_interval option controls the seconds for the master's maintinance
 # process check cycle. This process updates file server backends, cleans the

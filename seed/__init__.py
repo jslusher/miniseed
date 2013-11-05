@@ -39,6 +39,6 @@ setattr(settings, "RESOURCE_PATH", os.path.join(os.path.abspath(os.path.dirname(
 setattr(settings, "NETWORK_DELAY", 5)
 setattr(settings, "NETWORK_TIMEOUT", 540) # 9 min
 setattr(settings, "SSH_PORT", 22)
-setattr(settings, "DNS_DEFAULT", os.environ.get("BULBASAUR_DNS_NAMESPACE", None))
+setattr(settings, "DNS_DEFAULT", os.environ.get("DNS_DOMAIN", None))
 validate_settings(settings)
 build_logger(settings.name)
