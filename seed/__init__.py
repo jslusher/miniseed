@@ -4,8 +4,14 @@ from argparse import Namespace
 import os
 import sys
 import logging
-from seed.base import validate_settings, define_arguments, AWS_ACCESS, AWS_SECRET, \
-                      ROUTE53_KEY, ROUTE53_SECRET, GIT_PKEY, SALT_CLOUD_KEY
+from seed.base import validate_settings, define_arguments
+
+AWS_ACCESS = os.environ.get('AWS_ACCESS_KEY_ID', None)
+AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
+ROUTE53_KEY = os.environ.get('ROUTE53_KEY', None)
+ROUTE53_SECRET = os.environ.get('ROUTE53_SECRET', None)
+GIT_PKEY = os.environ.get('GIT_PKEY', None)
+SALT_CLOUD_KEY = os.environ.get('SALT_CLOUD_KEY', None)
 
 logger = logging.getLogger(__name__)
 

@@ -48,21 +48,9 @@ def define_arguments():
         dest="name", default=None, type=unicode,
         help="Names must be unique", )
 
-    parser.add_argument('-d', '--domain',
-        dest="domain", default=None, type=unicode,
-        help="Domain name you would like to apply to an instance", )
     parser.add_argument('-e', '--provider',
         dest="provider", default=None, type=unicode,
         help="Rather then passing a profile to get a driver, you just need a provider.", )
-    parser.add_argument('-x', '--export-key-archive-path',
-        dest="key_export_path", default=None, type=unicode,
-        help="Path to export key files to /key/path", )
-    parser.add_argument('-k', '--import-key-archive-path',
-        dest="key_import_path", default=None, type=unicode,
-        help="Import an archive from a /key/path", )
-    parser.add_argument('-o', '--output',
-        dest="output_path", default=None, type=unicode,
-        help="Where to place this output data",)
     parser.add_argument('-m', '--map_list',
         dest="map_list", default=None, type=unicode,
         help="Specify a shorthand map file that the seeder will populate with the appropriate grains", )
