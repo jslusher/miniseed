@@ -11,12 +11,6 @@ from unittest import TestLoader, TestResult, TextTestRunner
 import logging
 
 logger = logging.getLogger(__name__)
-AWS_ACCESS = os.environ.get('AWS_ACCESS_KEY_ID', None)
-AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
-ROUTE53_KEY = os.environ.get('ROUTE53_KEY', None)
-ROUTE53_SECRET = os.environ.get('ROUTE53_SECRET', None)
-GIT_PKEY = os.environ.get('GIT_PKEY', None)
-SALT_CLOUD_KEY = os.environ.get('SALT_CLOUD_KEY', None)
 
 def define_arguments():
     parser = argparse.ArgumentParser(description="""
@@ -51,14 +45,18 @@ def define_arguments():
     parser.add_argument('-e', '--provider',
         dest="provider", default=None, type=unicode,
         help="Rather then passing a profile to get a driver, you just need a provider.", )
+
     parser.add_argument('-m', '--map_list',
         dest="map_list", default=None, type=unicode,
         help="Specify a shorthand map file that the seeder will populate with the appropriate grains", )
+    
     parser.add_argument('-t', '--template-path', 
         dest="template_path", default=None, type=unicode,
         help="Path to the jinja2 templates", )
+    
     parser.add_argument('-s', '--run-tests',
         dest="run_tests", action="store_true", default=False, )
+    
     parser.add_argument('-c', '--drain-c',
         dest="drain_c", action="store_true", 
         help="For some reason -c is being passed. So, we'll just sink it.", )
