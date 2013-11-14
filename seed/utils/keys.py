@@ -49,7 +49,6 @@ def get_public_key_from_file(public_key_path=None):
     ssh_key_deployment = None
     with open(public_key_path) as stream:
         ssh_key_deployment = SSHKeyDeployment(stream.read())
-
     return ssh_key_deployment
 
 def generate_keypair(private_key_path, public_key_path, bits=8192, overwrite=False):

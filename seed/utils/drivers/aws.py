@@ -27,15 +27,15 @@ def locate_security_group(ec2_driver, seed_profile, auto_create=False):
     with auto_create, it'll gracefully create a security group. 
     """
     available_security_groups = ec2_driver.ex_list_security_groups()
-    if seed_profile.security_group.name not in available_security_groups:
+    if seed_profile.security_group['name'] not in available_security_groups:
         if not auto_create:
-            raise SecurityGroupDoesNotExistError(seed_profile.security_group.name)
+            raise SecurityGroupDoesNotExistError(seed_profile.security_group['name'])
     
     try:
         ec2_driver.ex_create_security_group(
-            seed_profile.security_group.name,
-            seed_profile.security_group.description, )
-        logger.debug("Security Group already exists %s" % seed_profile.security_group.name)
+            seed_profile.security_group['name'],
+            seed_profile.security_group['description'], )
+        logger.debug("Security Group already exists %s" % seed_profile.security_group['name'])
     except SeedException, e:
         raise e
     except Exception, e:
@@ -54,9 +54,9 @@ def update_security_group(ec2_driver, seed_profile):
     returns boolean on success
     """
     try:
-        for port in seed_profile.security_group.ports:
+        for port in seed_profile.security_group['ports']:
             ec2_driver.ex_authorize_security_group(
-                seed_profile.security_group.name,
+                seed_profile.security_group['name'],
                 port.from_port,
                 port.to_port or port.from_port,
                 port.cidr_ip,
@@ -129,16 +129,16 @@ def import_keypair(ec2_driver, seed_profile, overwrite=False):
      you have to manually remove them from every running instance.
     """
     try:
-        seed_keypair = ec2_driver.ex_describe_keypairs(seed_profile.keypair.name)
-        logger.debug("Keypair exists %s" % seed_profile.keypair.name)
-    except Exception, error:
+        seed_keypair = ec2_driver.ex_describe_keypairs(seed_profile.keypair['name'])
+        logger.debug("Keypair exists %s" % seed_profile.keypair['name'])
+    except Exception as  e:
         if not error.message.startswith('InvalidKeyPair.NotFound'):
             logger.error(e.message)
     
     private_key_path, public_key_path, generated = obtain_keypair(seed_profile, overwrite=overwrite)
     if overwrite or generated:
         logger.debug("Injecting Keypair to AWS [%s]" % seed_profile.keypair.name)
-        ec2_driver.ex_import_keypair(seed_profile.keypair.name, public_key_path)
+        ec2_driver.ex_import_keypair(seed_profile.keypair['name'], public_key_path)
 
     return True
 
@@ -151,15 +151,15 @@ def obtain_keypair(seed_profile, overwrite=False):
     the keypair doesn't exist locally
     """
     generated = False
-    if not os.path.exists(seed_profile.keypair.local_path) and not os.path.exists(seed_profile.keypair.local_path) or overwrite:
-        logger.debug("Generating keypair here %s" % seed_profile.keypair.local_path)
+    if not os.path.exists(seed_profile.keypair['local_path']) and not os.path.exists(seed_profile.keypair['local_path']) or overwrite:
+        logger.debug("Generating keypair here %s" % seed_profile.keypair['local_path'])
         private_key_path, public_key_path = generate_keypair(
-            seed_profile.keypair.local_path,
-            "%s.pub" % seed_profile.keypair.local_path,
+            seed_profile.keypair['local_path'],
+            "%s.pub" % seed_profile.keypair['local_path'],
             bits=seed_profile.keypair.bits, )
         generated = True
 
-    return "%s" % seed_profile.keypair.local_path, "%s.pub" % seed_profile.keypair.local_path, generated
+    return "%s" % seed_profile.keypair['local_path'], "%s.pub" % seed_profile.keypair['local_path'], generated
 
 def apply_tags(libcloud_image, seed_profile):
 

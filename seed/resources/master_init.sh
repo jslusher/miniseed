@@ -2,7 +2,10 @@
 sudo yum update -y && sudo yum upgrade -y
 sudo yum install bash-completion -y
 sudo yum install system-config-firewall-base -y
-sudo yum install salt salt-master -y
+echo "local install /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm"
+sudo yum localinstall /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm -y
+echo "local install /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm"
+sudo yum localinstall /home/ec2-user/salt-master-0.16.4-1.fc18.noarch.rpm -y
 sudo yum install git -y
 sudo yum install python-pip -y
 sudo pip install apache-libcloud

@@ -49,7 +49,11 @@ def define_arguments():
     parser.add_argument('-m', '--map_list',
         dest="map_list", default=None, type=unicode,
         help="Specify a shorthand map file that the seeder will populate with the appropriate grains", )
-    
+
+    parser.add_argument('-v', '--vpc',
+            dest="vpc_subnet", nargs=2, default=['dev', '10.0.0.10'], type=unicode,
+            help="Specify VPC subnet  and IP in that subnet to launch to a VPC.", )
+
     parser.add_argument('-t', '--template-path', 
         dest="template_path", default=None, type=unicode,
         help="Path to the jinja2 templates", )

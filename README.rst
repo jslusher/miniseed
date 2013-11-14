@@ -57,16 +57,13 @@ Keys.sh
 
 Launch a salt-master 
 ********************
-    With your map_file, cloud, and cloud.profile configured for you deployment,
+    With your map_file, cloud, and cloud.profile configured for your deployment,
     run the following:
 .. code-block:: bash
     $ pip install -r requirements.txt
     $ source "/path/to/keys.sh"
-    $ python -m seed -a launch -p aws_master -n 'name-of-salt-cloud-master'
-
-Remove a domain from an instance
-********************************
+    $ python -m seed -a launch -m /path/to/map_file -p master_profile -n 'name-of-salt-cloud-master'
+    To launch a salt-master in a vpc, you must provide the following additional arguments:
 .. code-block:: bash
-
-    $ export DNS_DOMAIN="dev.next.opinionlab.com"
-    $ python -m seed -a remove-domain --provider aws -n bulbasaur
+    $ python -m seed launch -m /path/to/map_file -p master_profile -n
+    'name-of-vpc-master' --vpc 'name-of-env' 'subnet-ip-in-that-vpc'

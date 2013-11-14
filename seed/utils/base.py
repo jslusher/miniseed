@@ -8,6 +8,8 @@ from libcloud.compute.deployment import FileDeployment, \
     MultiStepDeployment, ScriptDeployment
 from libcloud.compute.ssh import SSHClient
 
+from boto import ec2 as boto_ec2
+
 from seed import settings
 from seed.exceptions import SeedZeroNameError, SeedAMIDoesNotExistError, \
     SeedMachineDoesNotExistError, SeedDuplicateNameError
@@ -24,10 +26,7 @@ logger = logging.getLogger(__name__)
 
 import os
 import datetime
-import json
-import random
 import time
-import urllib
 from socket import timeout as socket_timeout
 
 def seed_machine(seed_profile):
@@ -59,18 +58,14 @@ def seed_machine(seed_profile):
             img = conn.list_images(ex_image_ids=[seed_profile.ami])[0]
         except IndexError:
             raise SeedAMIDoesNotExistError
-        
         locate_security_group(img.driver, seed_profile, auto_create=True)
         import_keypair(img.driver, seed_profile, overwrite=False)
 
-        #generate_keypair(img.driver, seed_profile)
         ex_args.update({
             'ex_region': get_availability_zone(img, seed_profile),
-            #'ex_region': get_or_create_availabilty_zones(img, seed_profile),
-            'ex_keyname': seed_profile.keypair.name,
-            'ex_securitygroup': seed_profile.security_group.name})
+            'ex_keyname': seed_profile.keypair['name'],
+            'ex_securitygroup': seed_profile.security_group['name']})
 
-    # if 'rackspace'
     size = obtain_size(img, seed_profile)
     ex_args.update({
         'name': seed_profile.name,
@@ -89,6 +84,46 @@ def seed_machine(seed_profile):
             raise e
     
     return instance.id
+
+def seed_vpc(seed_profile, vpc_sec_grp='default', env='dev'): 
+    conn = None
+    img = seed_profile.ami
+    subnet = seed_profile.vpc_subnets[settings.vpc_subnet[0]]
+    subnet_ip = settings.vpc_subnet[1]
+    vpc_security_group = seed_profile.vpc_sec_grp_ids[vpc_sec_grp]
+    img_size = seed_profile.size[env]
+    vpc_az = seed_profile.region
+
+    if not hasattr(seed_profile, 'name') or seed_profile.name is None:
+        raise SeedZeroNameError
+
+    conn = boto_ec2.connect_to_region(seed_profile.vpc_east_region, \
+                                        aws_access_key_id=settings.AWS_ACCESS, \
+                                        aws_secret_access_key=settings.AWS_SECRET)
+    try:
+        eip = conn.allocate_address(domain='vpc')
+    except Exception as e:
+        logger.error("Could not allocate Elastic IP: %s" % e)
+
+    launch_args = {
+            "key_name": seed_profile.keypair['name'],
+            "security_group_ids": vpc_security_group, 
+            "subnet_id": subnet,
+            "instance_type": img_size, 
+            "private_ip_address": subnet_ip, 
+            "placement": vpc_az,
+            }
+    
+    try:
+        instance = conn.run_instances(img, **launch_args)
+        time.sleep(30)
+        for iname in instance.instances:
+            iname.add_tag('Name', seed_profile.name)
+        instance = instance.instances[0]
+        conn.associate_address(instance.id, allocation_id= eip.allocation_id)
+        return instance, eip
+    except Exception as e:
+        logger.error("Could not provision instance: %s" % e)
 
 def execute_files_on_minion(deployment_files, libcloud_node, ssh_client):
     def obtain_session(ssh_client):
@@ -133,28 +168,27 @@ def water_machines(seed_profile, uuids):
     nodes = []
     if seed_profile.driver == 'aws':
         driver = obtain_driver(seed_profile)
-        nodes = driver.list_nodes(ex_node_ids=uuids)
-
+        nodes = [i for i in driver.list_nodes() if i.name == seed_profile.name]
     for libcloud_node in nodes:
         logger = logging.getLogger('*'.join([__name__, libcloud_node.name]))
         libcloud_node, private_ips = libcloud_node.driver.wait_until_running(
             nodes=[libcloud_node], ssh_interface="private_ips")[0]
 
-        scripts = []
-        for script in seed_profile.init_scripts:
-            logger.warn("SCRIPT: %s" % script)
-            _file = FileDeployment(find_script(script),
+    scripts = []
+    for script in seed_profile.init_scripts:
+        logger.warn("SCRIPT: %s" % script)
+        _file = FileDeployment(find_script(script),
                 target="/home/%s/%s" % (seed_profile.ami_user, script), )
-            scripts.append(_file)
-        msd = MultiStepDeployment(scripts)
-        deploy_msd_to_node(libcloud_node, msd, seed_profile.keypair.local_path)
+        scripts.append(_file)
+    msd = MultiStepDeployment(scripts)
+    deploy_msd_to_node(libcloud_node, msd, seed_profile.keypair['local_path'])
 
 def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     ##msd = MultiStepDeployment(Scripts from water_machines above)
     logger.warn("TODO: REFACTOR AND TAKE OUT ec2-user literal")
     seed_profile = settings.operation_profile
     seed_profile = get_profile(seed_profile)
-    pkey = seed_profile.keypair.local_path
+    pkey = seed_profile.keypair['local_path']
     ssh_client = SSHClient(hostname=libcloud_node.public_ip[0],
         port=settings.SSH_PORT,
         username='ec2-user', 
@@ -166,8 +200,9 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     ##This begins a series of file placements for the masters subsequent deployment tasks in the init script. 
     while True:
         time.sleep(5)
+        dns_attempts = 0
         if seed_profile.profile_name == "salt_master": 
-            dns_attempts = 0
+            dns_attempts += 0
             logger.info("Number of attempts to connect: %s" % dns_attempts)
             try:
                 logger.info("Attemping to connect to new node.")
@@ -245,7 +280,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
             if ssh_client.connect() is True:
                 # Deploy files to libcloud_node
                 msd.run(libcloud_node, ssh_client)
-                pubkey_file = find_script('master_public_keys.sh')
+                pubkey_file = find_script("master_public_keys.sh")
                 ssh_key = get_public_key_from_file(pubkey_file)
                 ssh_key.run(libcloud_node, ssh_client)
 
@@ -305,26 +340,6 @@ def reanimate_machines(seed_profile, uuids=[]):
     if seed_profile.driver == 'aws':
         nodes = obtain_aws_nodes(uuids)
         return [node.driver.ex_start_node(node) for node in nodes]
-
-def detect_frozen_machines(seed_profile, uuids=[]):
-    """
-    Finds machines that are suspended.
-    returns a list of uuids
-    """
-
-    ex_args = {}
-    if seed_profile.driver == 'aws':
-        conn = get_driver(Provider.EC2)(settings.AWS_ACCESS, 
-            settings.AWS_SECRET)
-        if uuids:
-            nodes = conn.list_nodes(ex_node_ids=uuids)
-        else:
-            nodes = conn.list_nodes()
-
-        nodes = obtain_aws_nodes(uuids)
-        return [node.id
-            for node in nodes 
-                if node.extra.get('status') == 'stopped']
 
 
 def detect_stranded_volumes(seed_profile, region=None):

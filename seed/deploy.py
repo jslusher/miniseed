@@ -2,11 +2,10 @@
 from __future__ import unicode_literals
 
 from seed import settings
-from seed.profiles import available_profiles, SEED_PROFILES, get_profile
+from seed.profiles import aws, get_profile
 from seed.utils import seed_machine, water_machines, \
-    freeze_machines, reanimate_machines, expose_machines
+    expose_machines, seed_vpc
 from seed.utils.parse_map_file import parse_map_file
-from seed.shortcuts import obtain_driver_by_name
 from seed.exceptions import SeedProfileDoesNotExistError, \
     SeedZeroNameError, SeedMachineDoesNotExistError, SeedDomainExistError, \
     SeedDomainDoesNotExistError, SeedInvalidCredentials, \
@@ -17,8 +16,6 @@ logger = logging.getLogger(__name__)
 
 import os
 import sys
-import shutil
-import zipfile
 
 from libcloud.dns.providers import get_driver as get_dns_driver
 from libcloud.dns.types import Provider as DNSProvider, RecordType
@@ -48,14 +45,17 @@ def create(instance_name=None):
         profiles.exceptions.DriverNotSupportedError
     """
     if settings.operation_profile_list:
-        logger.info("Profiles: [%s]" % ','.join(SEED_PROFILES.keys()))
+        p_list = ','.join(SEED_PROFILES.keys())
+        for p in p_list:
+            logger.info("Profile: %s" % p)
+        #logger.info("Profiles: [%s]" % ','.join(SEED_PROFILES.keys()))
         sys.exit()
 
     if settings.operation_profile:
         seed_profile = get_profile(settings.operation_profile)
     else:
         settings.operation_profile = "salt_master"
-        seed_profile = available_profiles.AWS_MASTER.copy()
+        seed_profile = aws.master_profile.copy()
         logger.info("Using default profile: %s " % settings.operation_profile)
     
     if not seed_profile: 
@@ -64,10 +64,13 @@ def create(instance_name=None):
     if settings.map_list:
         parse_map_file(settings.map_list)
     else:
-        logger.info("map_file not specified. using existing dev_map file from resources.")
+        logger.info("map_file not specified. using existing salt_cloud_map file from resources.")
     logger.info("Profile being used: %s" % settings.operation_profile)
     seed_profile.name = instance_name or settings.name
-    instance_id = seed_machine(seed_profile)
+    if settings.vpc_subnet:
+        instance_id = seed_vpc(seed_profile)
+    else:
+        instance_id = seed_machine(seed_profile)
     water_machines(seed_profile, [instance_id])
 
 def obtain_domain_record(requested_domain, seed_profile=None):
@@ -114,7 +117,7 @@ def terminate(instance_name=None):
     if instance_name is None:
         raise SeedZeroNameError("You must specify a name to terminate a salt master")
 
-    salt_master = available_profiles.AWS_MASTER.copy()
+    salt_master = aws.AWS_MASTER.copy()
     libcloud_nodes = expose_machines(salt_master)
     for libcloud_node in libcloud_nodes:
         if libcloud_node.name == instance_name:
@@ -126,14 +129,16 @@ def terminate(instance_name=None):
 
 
 def list_nodes(silent=False):
-    salt_master = available_profiles.AWS_MASTER.copy()
+    salt_master = aws.AWS_MASTER.copy()
     data = expose_machines(salt_master)
     if not silent:
-        logger.info("Online instances.")
-        logger.info(expose_machines(salt_master))
+        logger.info("Online instances:")
+        inst_list = expose_machines(salt_master)
+        for i in inst_list:
+            logger.info("Instance: %s    IP:    %s    State:    %s    uuid: %s" % (i.name, i.public_ips, i.state, i.uuid))
     
 def list_ips(node_name=None):
-    salt_master = available_profiles.AWS_MASTER.copy()
+    salt_master = aws.AWS_MASTER.copy()
     data = expose_machines(salt_master)
     for i in data:
         try:

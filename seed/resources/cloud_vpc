@@ -1,0 +1,47 @@
+providers:
+  dev-vpc-east:
+    minion:
+      master: vpc-salt-master2.dev.next.opinionlab.com
+
+    ssh_interface: private_ips
+
+    id: AKIAJY5XII4RYXEDWNNA
+    key: '7i3MykT+ElDTu12Q/wmp1PRfStJ0xVq9G1Scf8Bh'
+
+    private_key: /etc/salt/salt-cloud-dev.pem
+    keyname: salt-cloud-dev
+    securitygroupid: 
+      - sg-8cb8aeee
+
+    location: us-east-1
+    availability_zone: us-east-1d
+
+    ssh_username: ec2-user
+
+    provider: ec2
+
+    delvol_on_destroy: True
+
+  dev-vpc-west:
+    minion:
+      master: vpc-salt-master.dev.next.opinionlab.com
+
+    ssh_interface: private_ips
+
+    id: AKIAJY5XII4RYXEDWNNA
+    key: '7i3MykT+ElDTu12Q/wmp1PRfStJ0xVq9G1Scf8Bh'
+
+    private_key: /etc/salt/salt-cloud-dev.pem
+    keyname: salt-cloud-dev
+    securitygroupid: 
+      - sg-8cb8aeee
+
+    location: us-west-1
+    availability_zone: us-west-1d
+
+    ssh_username: ec2-user
+
+    provider: ec2
+
+    delvol_on_destroy: True
+

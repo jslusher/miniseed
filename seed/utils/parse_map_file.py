@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 salt_cloud_map = find_script('salt_cloud_map')
 
 def parse_instance_name(hostname=None, profile='ec2_east_micro'):
-    if 'ec2' in hostname:
+    if 'ec2'  or 'vpc' in hostname:
         with open(salt_cloud_map, 'a') as pfile:
             pfile.write("%(p)s:\n" % {'p': map_dict.prof_dict[hostname]})
     else:

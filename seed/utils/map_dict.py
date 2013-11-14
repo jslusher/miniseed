@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 grn_inf_dict = {
         'aws': 'aws',
+        'vpc': 'aws_vpc',
         'xen': 'xenserver',
         'rak': 'rackspace',
         'gov': 'govcloud'
@@ -81,4 +82,19 @@ prof_dict = {
         'ec2_e_lar_enc': 'ec2_east_large_encrypted',
         'ec2_w_lar_enc': 'ec2_west_large_encrypted',
         'ec2_e_lml_enc': 'ec2_east_aws_linux_mem_large_encrypted',
+        'vpc_e_mic': 'vpc_east_micro',
+        'vpc_w_mic': 'vpc_west_micro',
+        'vpc_e_med': 'vpc_east_medium',
+        'vpc_w_med': 'vpc_west_medium',
+        'vpc_e_lar': 'vpc_east_large',
+        'vpc_w_lar': 'vpc_west_large',
+        'vpc_e_lml': 'vpc_east_aws_linux_mem_large',
+        'vpc_e_rml': 'vpc_east_rhel_mem_large',
+        'vpc_e_mic_enc': 'vpc_east_micro_encrypted',
+        'vpc_w_mic_enc': 'vpc_west_micro_encrypted',
+        'vpc_e_med_enc': 'vpc_east_medium_encrypted',
+        'vpc_w_med_enc': 'vpc_west_medium_encrypted',
+        'vpc_e_lar_enc': 'vpc_east_large_encrypted',
+        'vpc_w_lar_enc': 'vpc_west_large_encrypted',
+        'vpc_e_lml_enc': 'vpc_east_aws_linux_mem_large_encrypted',
         }
