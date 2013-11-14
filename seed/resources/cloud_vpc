@@ -1,7 +1,7 @@
 providers:
   dev-vpc-east:
     minion:
-      master: vpc-salt-master2.dev.next.opinionlab.com
+      master: vpc-salt-master.dev.next.opinionlab.com
 
     ssh_interface: private_ips
 

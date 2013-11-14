@@ -117,7 +117,7 @@ def terminate(instance_name=None):
     if instance_name is None:
         raise SeedZeroNameError("You must specify a name to terminate a salt master")
 
-    salt_master = aws.AWS_MASTER.copy()
+    salt_master = aws.master_profile.copy()
     libcloud_nodes = expose_machines(salt_master)
     for libcloud_node in libcloud_nodes:
         if libcloud_node.name == instance_name:
@@ -129,7 +129,9 @@ def terminate(instance_name=None):
 
 
 def list_nodes(silent=False):
-    salt_master = aws.AWS_MASTER.copy()
+    if not settings.operation_profile:
+        settings.operation_profile = 'master_profile'
+    salt_master = get_profile(settings.operation_profile)
     data = expose_machines(salt_master)
     if not silent:
         logger.info("Online instances:")
@@ -138,7 +140,9 @@ def list_nodes(silent=False):
             logger.info("Instance: %s    IP:    %s    State:    %s    uuid: %s" % (i.name, i.public_ips, i.state, i.uuid))
     
 def list_ips(node_name=None):
-    salt_master = aws.AWS_MASTER.copy()
+    if not settings.operation_profile:
+        settings.operation_profile = 'master_profile'
+    salt_master = get_profile(settings.operation_profile)
     data = expose_machines(salt_master)
     for i in data:
         try:

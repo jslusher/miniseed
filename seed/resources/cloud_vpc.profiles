@@ -3,19 +3,27 @@ vpc_east_micro:
   image: ami-b71078de
   size: Micro Instance
   subnetid: subnet-762d0602
-  ssh_username: vpc-user
+  ssh_username: ec2-user
   rename_on_destroy: True
 vpc_east_small:
   provider: dev-vpc-east
   image: ami-b71078de
   subnetid: subnet-762d0602
   size: Small Instance
-  ssh_username: vpc-user
+  ssh_username: ec2-user
   rename_on_destroy: True
 vpc_east_medium:
   provider: dev-vpc-east
   image: ami-b71078de
   subnetid: subnet-762d0602
   size: Medium Instance
-  ssh_username: vpc-user
+  ssh_username: ec2-user
   rename_on_destroy: True
+vpc_east_medium_encrypted:
+  provider: dev-vpc-east
+  image: ami-b71078de
+  subnetid: subnet-762d0602
+  size: Medium Instance
+  ssh_username: ec2-user
+  rename_on_destroy: True
+

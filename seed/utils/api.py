@@ -34,7 +34,6 @@ def obtain_driver(seed_profile):
     if seed_profile.driver not in _supported_drivers.keys():
         raise SeedDriverNotSupportedError("%s [%s]" 
             % (seed_profile.driver, _supported_drivers.keys()))
-
     driver = get_driver(_supported_drivers.get('aws'))
     logger.debug("Using %s driver. [profile: %s] " %( seed_profile.driver, seed_profile))
     return driver(settings.AWS_ACCESS, settings.AWS_SECRET)

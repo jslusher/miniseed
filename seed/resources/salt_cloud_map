@@ -1,36 +1,23 @@
-ec2_east_micro:
-  - aws-dev-int-cin-sen4: 
+vpc_east_small:
+  - aws-dev-int-cin-jkn1: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
         servertype: contentint 
-        serverrole: sentry 
-  - aws-dev-fes-prx-opp4: 
+        serverrole: jenkins 
+  - aws-dev-fes-rby-rba1: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: feserver 
-        servertype: proxy 
-        serverrole: olpub_pxy 
-  - aws-dev-int-mon-rsl4: 
+        servertype: feserver 
+        serverrole: ruby_app 
+vpc_east_medium_encrypted:
+  - aws-dev-dat-pgm-rpg4: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
         servertype: monitoring 
         serverrole: rsyslog 
-  - aws-dev-dat-gpg-pgm4: 
-      grains: 
-        infrastructure: aws 
-        environment: dev 
-        servergroup: datserver 
-        servertype: pg_master 
-        serverrole: gen_postgres 
-  - aws-dev-int-mon-grp4: 
-      grains: 
-        infrastructure: aws 
-        environment: dev 
-        servergroup: intserver 
-        servertype: monitoring 
-        serverrole: graphite 

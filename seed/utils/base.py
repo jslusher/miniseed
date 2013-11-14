@@ -216,7 +216,7 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
                     break
                 continue
             # salt-cloud files necessary for deployment
-            for f in seed_profile.salt_cloud_files:
+            for f in seed_profile.salt_cloud_vpc_files:
                 try:
                     cloud_files = FileDeployment(find_script(f),
                         target="/home/%s/%s" % (seed_profile.ami_user, os.path.basename(f)))
