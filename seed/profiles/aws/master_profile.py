@@ -4,7 +4,7 @@ from constants import x86_64 as AWS_x86_64
 import os
 from seed import settings
 
-domain = "dev.next.opinionlab.com."
+domain = "dev-next.opinionlab.com."
 route53_key = settings.ROUTE53_KEY
 route53_secret = settings.ROUTE53_SECRET
 git_rsa_key = settings.GIT_PKEY
@@ -22,7 +22,9 @@ master_profile = {
         "bits": 4096,
     },
     "vpc_subnets": {
-        "dev": "subnet-e95521c1",
+        "dev_east_1a": "subnet-0b10257f",
+        "dev_east_1b": " subnet-0b17404d",
+        "dev_east_1d": "subnet-61dfa849",
         },
     "verbose": 3,
     "security_group": {
@@ -30,19 +32,23 @@ master_profile = {
         "description": "auto-generated",
             },
     "vpc_sec_grp_ids": {
-        "default": ["sg-8cb8aeee",],
+        "default": ["sg-26d7cf44",],
         },
-    "region": "us-east-1d",
+    "region": {
+        "dev_east_1a": "us-east-1a",
+        "dev_east_1b": "us-east-1b",
+        "dev_east_1d": "us-east-1d",
+        },
     "vpc_east_region": "us-east-1",
     "size": {
-        "dev": "t1.micro",
+        "dev": "m1.small",
         "qa": "t1.micro",
         "stage": "m1.small",
         "prod": "m1.small",
         },
     "init_scripts": ("master_init.sh",),
-    "salt_cloud_files": ("cloud", "cloud.profiles", "salt_cloud_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata", "salt-0.16.4-1.fc18.noarch.rpm", "salt-master-0.16.4-1.fc18.noarch.rpm"), 
-    "salt_cloud_vpc_files": ("cloud_vpc", "cloud_vpc.profiles", "salt_cloud_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata", "salt-0.16.4-1.fc18.noarch.rpm", "salt-master-0.16.4-1.fc18.noarch.rpm"), 
+    "salt_cloud_files": ("cloud", "cloud.profiles", "salt_cloud_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata", "salt-master-0.16.4-1.fc18.noarch.rpm"), 
+    "salt_cloud_vpc_files": ("cloud_vpc", "cloud_vpc.profiles", "salt_cloud_map", os.path.expanduser(salt_cloud_key), "salt_master_add.txt", "ec2-metadata", "salt-0.17.2.tar.gz", "salt-cloud-0.8.9.tar.gz"), 
     "tags": ("master", "dev", "salt"),
     "DNS_script": "register_master_DNS.py",
     "DNS_command": "r53_register_command.sh",

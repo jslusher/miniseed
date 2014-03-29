@@ -1,23 +1,15 @@
 vpc_east_small:
-  - aws-dev-int-cin-jkn1: 
+  - vpc-dev-int-cin-jkn3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: intserver 
         servertype: contentint 
         serverrole: jenkins 
-  - aws-dev-fes-rby-rba1: 
+  - vpc-dev-fes-rby-rba3: 
       grains: 
         infrastructure: aws 
         environment: dev 
         servergroup: feserver 
-        servertype: feserver 
+        servertype: ruby 
         serverrole: ruby_app 
-vpc_east_medium_encrypted:
-  - aws-dev-dat-pgm-rpg4: 
-      grains: 
-        infrastructure: aws 
-        environment: dev 
-        servergroup: intserver 
-        servertype: monitoring 
-        serverrole: rsyslog 

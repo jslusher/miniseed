@@ -91,8 +91,11 @@ def seed_vpc(seed_profile, vpc_sec_grp='default', env='dev'):
     subnet = seed_profile.vpc_subnets[settings.vpc_subnet[0]]
     subnet_ip = settings.vpc_subnet[1]
     vpc_security_group = seed_profile.vpc_sec_grp_ids[vpc_sec_grp]
-    img_size = seed_profile.size[env]
-    vpc_az = seed_profile.region
+    if not settings.image_size:
+        img_size = 'm1.small'
+    else:
+        img_size = settings.image_size
+    vpc_az = seed_profile.region[env]
 
     if not hasattr(seed_profile, 'name') or seed_profile.name is None:
         raise SeedZeroNameError
@@ -189,20 +192,19 @@ def deploy_msd_to_node(libcloud_node, msd, private_key_path=None):
     seed_profile = settings.operation_profile
     seed_profile = get_profile(seed_profile)
     pkey = seed_profile.keypair['local_path']
-    ssh_client = SSHClient(hostname=libcloud_node.public_ip[0],
+    ssh_client = SSHClient(hostname=libcloud_node.private_ip[0],
         port=settings.SSH_PORT,
         username='ec2-user', 
         password=None,
         key=pkey,
         timeout=int(settings.NETWORK_TIMEOUT),)
-
     attempts = 0
+    dns_attempts = 0
     ##This begins a series of file placements for the masters subsequent deployment tasks in the init script. 
     while True:
         time.sleep(5)
-        dns_attempts = 0
         if seed_profile.profile_name == "salt_master": 
-            dns_attempts += 0
+            dns_attempts += 1
             logger.info("Number of attempts to connect: %s" % dns_attempts)
             try:
                 logger.info("Attemping to connect to new node.")

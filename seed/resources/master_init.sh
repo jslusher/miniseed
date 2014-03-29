@@ -2,30 +2,30 @@
 sudo yum update -y && sudo yum upgrade -y
 sudo yum install bash-completion -y
 sudo yum install system-config-firewall-base -y
-echo "local install /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm"
-sudo yum localinstall /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm -y
-echo "local install /home/ec2-user/salt-0.16.4-1.fc18.noarch.rpm"
-sudo yum localinstall /home/ec2-user/salt-master-0.16.4-1.fc18.noarch.rpm -y
 sudo yum install git -y
-sudo yum install python-pip -y
-sudo pip install apache-libcloud
-sudo pip install --upgrade boto 
-sudo pip install --upgrade salt-cloud
-
+sudo yum install python-devel -y
 echo "Installing developer tools"
 sudo yum -y groupinstall "Development Tools"
 sudo yum -y install openssl-devel
 sudo yum -y install supervisor
 
+sudo yum install python-pip -y
+sudo pip install apache-libcloud
+sudo pip install --upgrade boto 
+sudo yum install salt salt-master -y
+#sudo pip install --upgrade salt-cloud
+(sudo cd /opt && sudo git clone https://github.com/saltstack/salt-cloud.git)
+(sudo cd /opt/salt-cloud/salt_cloud && sudo python setup.py install)
+
 #This command references the python file that registers the new master's internal IP with route53
 echo "executing register script"
-/home/ec2-user/r53_register_command.sh
+#/home/ec2-user/r53_register_command.sh
 rm -f /home/ec2-user/r53_register_command.sh
 echo "removed register command script"
 
 echo "Placing salt-cloud files"
-sudo mv /home/ec2-user/cloud /etc/salt/cloud
-sudo mv /home/ec2-user/cloud.profiles /etc/salt/cloud.profiles
+sudo mv /home/ec2-user/cloud_vpc /etc/salt/cloud
+sudo mv /home/ec2-user/cloud_vpc.profiles /etc/salt/cloud.profiles
 sudo mv /home/ec2-user/salt_cloud_map /etc/salt/.
 sudo mv /home/ec2-user/salt-cloud-dev.pem /etc/salt/salt-cloud-dev.pem
 sudo chown ec2-user.ec2-user /etc/salt/salt-cloud-dev.pem

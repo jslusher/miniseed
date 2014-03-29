@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from seed import settings
 from seed.profiles import aws, get_profile
 from seed.utils import seed_machine, water_machines, \
@@ -68,7 +67,7 @@ def create(instance_name=None):
     logger.info("Profile being used: %s" % settings.operation_profile)
     seed_profile.name = instance_name or settings.name
     if settings.vpc_subnet:
-        instance_id = seed_vpc(seed_profile)
+        instance_id = seed_vpc(seed_profile, env=settings.vpc_subnet[0])
     else:
         instance_id = seed_machine(seed_profile)
     water_machines(seed_profile, [instance_id])

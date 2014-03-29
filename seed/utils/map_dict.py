@@ -22,6 +22,7 @@ grn_srvgrp_dict = {
 
 grn_srvtype_dict = {
         'cin': 'contentint',
+        'rmq': 'rabbit',
         'cfg': 'configuration',
         'mon': 'monitoring',
         'srv': 'services',
@@ -41,6 +42,7 @@ grn_srvtype_dict = {
 
 grn_srvrole_dict = {
         'bbt': 'buildbot',
+        'rmq': 'rabbitmq',
         'gtr': 'git_repo',
         'dmo': 'demo',
         'yum': 'yum_repo',

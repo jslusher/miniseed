@@ -4,6 +4,7 @@ docs/_build/*
 keys.sh
 seed/resources/salt-cloud-dev.pem
 seed/resources/cloud
+seed/resources/cloud_vpc
 seed/resources/ec2_git.rsa
 *.swp
 *.pid

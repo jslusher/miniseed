@@ -1,7 +1,7 @@
 providers:
   dev-vpc-east:
     minion:
-      master: vpc-salt-master.dev.next.opinionlab.com
+      master: 10.0.1.11
 
     ssh_interface: private_ips
 
@@ -11,10 +11,10 @@ providers:
     private_key: /etc/salt/salt-cloud-dev.pem
     keyname: salt-cloud-dev
     securitygroupid: 
-      - sg-8cb8aeee
+      - sg-26d7cf44
 
     location: us-east-1
-    availability_zone: us-east-1d
+    availability_zone: us-east-1a
 
     ssh_username: ec2-user
 

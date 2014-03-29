@@ -51,8 +51,12 @@ def define_arguments():
         help="Specify a shorthand map file that the seeder will populate with the appropriate grains", )
 
     parser.add_argument('-v', '--vpc',
-            dest="vpc_subnet", nargs=2, default=['dev', '10.0.0.10'], type=unicode,
+            dest="vpc_subnet", nargs=2, default=['dev_east_1d', '10.0.0.10'], type=unicode,
             help="Specify VPC subnet  and IP in that subnet to launch to a VPC.", )
+
+    parser.add_argument('--size',
+            dest="image_size", default='t.micro', type=unicode,
+            help="Pass --size using AWS standards. Default is t1.micro", )
 
     parser.add_argument('-t', '--template-path', 
         dest="template_path", default=None, type=unicode,
